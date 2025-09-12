@@ -1,8 +1,8 @@
 ## kante upload 
-# 250912
+### 250912 upload!
 
 
-### real robot 
+### real robot _ limo(jetson nano)
 
 roslaunch limo_base limo_base.launch
 
