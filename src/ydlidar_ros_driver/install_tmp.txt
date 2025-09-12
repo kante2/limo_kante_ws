@@ -1,0 +1,17 @@
+2) (실기 LiDAR 쓰려면) YDLIDAR-SDK 설치 후 빌드
+
+컨테이너 안에서 SDK를 설치해주면 해결됩니다. 한 번만 실행:
+
+# 필수 의존성
+apt-get update && apt-get install -y git cmake libusb-1.0-0-dev && rm -rf /var/lib/apt/lists/*
+
+# SDK 설치
+git clone https://github.com/YDLIDAR/YDLidar-SDK.git /tmp/YDLidar-SDK
+cd /tmp/YDLidar-SDK && mkdir build && cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON ..
+make -j"$(nproc)"
+make install
+ldconfig
+
+# cmake 패키지 파일이 설치됐는지 확인 (경로가 나오면 정상)
+find /usr/local -name 'ydlidar_sdk*cmake' -print

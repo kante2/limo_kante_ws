@@ -1,0 +1,18 @@
+<launch>
+  <!-- 기본 토픽/옵션 -->
+  <arg name="image_topic"        default="/limo/color/image_raw"/>
+  <arg name="camera_info_topic"  default="/limo/color/camera_info"/>
+  <arg name="use_cam_info"       default="true"/>
+  <arg name="resize_width"       default="0"/>   <!-- 0이면 리사이즈 안 함 -->
+  <arg name="resize_height"      default="0"/>
+  <arg name="window_name"        default="LIMO Camera"/>
+
+  <node pkg="limo_gazebo_utils" type="limo_camera_view.py" name="limo_camera_view" output="screen">
+    <param name="image_topic"        value="$(arg image_topic)"/>
+    <param name="camera_info_topic"  value="$(arg camera_info_topic)"/>
+    <param name="use_cam_info"       value="$(arg use_cam_info)"/>
+    <param name="resize_width"       value="$(arg resize_width)"/>
+    <param name="resize_height"      value="$(arg resize_height)"/>
+    <param name="window_name"        value="$(arg window_name)"/>
+  </node>
+</launch>

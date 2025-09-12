@@ -1,0 +1,14 @@
+# PC Noetic Dev Container (docker_pc)
+
+## 요구사항
+- Docker + Docker Compose v2
+- Xorg 세션 (Wayland라면 X11 포워딩 이슈 가능)
+- `xhost +local:docker` 1회 수행
+
+## 빌드 & 실행
+```bash
+# 리포 루트에서
+cd ~/limo_ws/src/limo_ros
+xhost +local:docker
+docker compose -f docker_pc/docker-compose.pc.yaml up -d --build
+docker exec -it limo-noetic-pc bash

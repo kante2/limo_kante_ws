@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="oval_track_world">
+
+    <!-- 태양 조명 -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- 검정 바닥 (충돌 포함) -->
+    <model name="ground_black">
+      <static>1</static>
+      <pose>0 0 0 0 0 0</pose>
+      <link name="ground_link">
+        <collision name="ground_collision">
+          <geometry>
+            <!-- 넉넉한 크기의 평면 박스 -->
+            <box>
+              <size>200 200 0.05</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="ground_visual">
+          <geometry>
+            <box>
+              <size>200 200 0.05</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 트랙: 흰색 바깥(캡슐형) + 검정색 안쪽(캡슐형)으로 흰색 링을 만듦 -->
+    <model name="oval_track_ring">
+      <static>1</static>
+
+      <!-- 흰색 바깥 캡슐(두께 0.01m) -->
+      <link name="track_outer">
+        <pose>0 0 0.01 0 0 0</pose>
+        <visual name="outer_white">
+          <geometry>
+            <!-- polyline을 extrude 해서 '캡슐(라운드 직사각형)' 모양을 만듦 -->
+            <!-- 길이(반쪽 직선) a=30, 반지름 R=12  => 전체 외곽 대략 84m x 24m -->
+            <polyline>
+              <height>0.01</height>
+              <!-- 위쪽 직선: (30,12) -> (-30,12) -->
+              <point>30.0 12.0</point>
+              <point>-30.0 12.0</point>
+              <!-- 왼쪽 반원 (중심: -30,0, 반지름 12) : 60° -> -90° -->
+              <point>-24.0 10.3923048454</point>
+              <point>-19.6076951546 6.0</point>
+              <point>-18.0 0.0</point>
+              <point>-19.6076951546 -6.0</point>
+              <point>-24.0 -10.3923048454</point>
+              <point>-30.0 -12.0</point>
+              <!-- 아래쪽 직선: (-30,-12) -> (30,-12) -->
+              <point>30.0 -12.0</point>
+              <!-- 오른쪽 반원 (중심: 30,0, 반지름 12) : -60° -> 90° -->
+              <point>36.0 -10.3923048454</point>
+              <point>40.3923048454 -6.0</point>
+              <point>42.0 0.0</point>
+              <point>40.3923048454 6.0</point>
+              <point>36.0 10.3923048454</point>
+              <point>30.0 12.0</point>
+            </polyline>
+          </geometry>
+          <material>
+            <ambient>1 1 1 1</ambient>
+            <diffuse>1 1 1 1</diffuse>
+            <specular>0.2 0.2 0.2 1</specular>
+            <emissive>0 0 0 0</emissive>
+          </material>
+        </visual>
+      </link>
+
+      <!-- 검정색 안쪽 캡슐(조금 더 위에 올려서 내부를 덮어 흰색 '링'만 남김) -->
+      <link name="track_inner">
+        <pose>0 0 0.015 0 0 0</pose>
+        <visual name="inner_black">
+          <geometry>
+            <!-- 내부는 외곽보다 3m씩 작게: a=27, R=9  => 트랙 폭(링 두께) ≈ 3m -->
+            <polyline>
+              <height>0.01</height>
+              <!-- 위쪽 직선: (27,9) -> (-27,9) -->
+              <point>27.0 9.0</point>
+              <point>-27.0 9.0</point>
+              <!-- 왼쪽 반원 (중심: -27,0, 반지름 9) -->
+              <point>-22.5 7.79422863406</point>
+              <point>-19.20577136594 4.5</point>
+              <point>-18.0 0.0</point>
+              <point>-19.20577136594 -4.5</point>
+              <point>-22.5 -7.79422863406</point>
+              <point>-27.0 -9.0</point>
+              <!-- 아래쪽 직선: (-27,-9) -> (27,-9) -->
+              <point>27.0 -9.0</point>
+              <!-- 오른쪽 반원 (중심: 27,0, 반지름 9) -->
+              <point>31.5 -7.79422863406</point>
+              <point>34.79422863406 -4.5</point>
+              <point>36.0 0.0</point>
+              <point>34.79422863406 4.5</point>
+              <point>31.5 7.79422863406</point>
+              <point>27.0 9.0</point>
+            </polyline>
+          </geometry>
+          <material>
+            <ambient>0 0 0 1</ambient>
+            <diffuse>0 0 0 1</diffuse>
+            <specular>0 0 0 1</specular>
+            <emissive>0 0 0 1</emissive>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 물리/시간 옵션(기본값) -->
+    <physics type="ode"/>
+    <gravity>0 0 -9.81</gravity>
+
+  </world>
+</sdf>

@@ -1,0 +1,9 @@
+build/
+devel/
+install/
+log/
+.vscode/
+.idea/
+*.swp
+# SDK 로컬빌드 폴더가 있다면
+src/ydlidar_sdk/build/

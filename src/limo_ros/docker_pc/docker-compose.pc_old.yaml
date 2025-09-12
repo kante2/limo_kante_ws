@@ -1,0 +1,23 @@
+services:
+  limo-noetic-pc:
+    build:
+      context: ..
+      dockerfile: docker/pc-noetic.Dockerfile
+    image: limo-noetic:pc
+    container_name: limo-noetic-pc
+    network_mode: host
+    stdin_open: true
+    tty: true
+    # 컨테이너를 계속 살려두는 가장 간단한 방법
+    command: ["tail","-f","/dev/null"]
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_MASTER_URI=http://127.0.0.1:11311
+      - ROS_IP=127.0.0.1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${HOME}/limo_ws:/root/ws:rw
+      - /etc/localtime:/etc/localtime:ro
+    devices:
+      - /dev/dri:/dev/dri

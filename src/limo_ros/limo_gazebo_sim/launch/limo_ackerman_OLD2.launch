@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- 네임스페이스 -->
+  <arg name="robot_namespace" default="limo"/>
+
+  <!-- 월드 파일 기본값 (패키지에 실제로 존재) -->
+  <!-- <arg name="world_name" default="$(find limo_gazebo_sim)/worlds/353_ros_lab.world"/> -->
+  <arg name="world_name" default="$(find limo_gazebo_sim)/worlds/empty.world"/>
+
+  <!-- Gazebo를 한 번만 띄움 + 모델/리소스 경로 전달 -->
+  <node name="gazebo" pkg="gazebo_ros" type="gazebo" output="screen"
+        args="$(arg world_name)">
+    <!-- 모델 로딩을 위해 모델/리소스 경로를 Gazebo에 전달 -->
+    <env name="GAZEBO_MODEL_PATH" value="$(find limo_gazebo_sim)/models:$(optenv GAZEBO_MODEL_PATH)"/>
+    <env name="GAZEBO_RESOURCE_PATH" value="$(find limo_gazebo_sim):$(optenv GAZEBO_RESOURCE_PATH)"/>
+  </node>
+
+  <!-- 로봇 URDF (너의 패키지 경로로 수정) -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find limo_gazebo_sim)/urdf/robot.xacro' robot_namespace:=$(arg robot_namespace)"/>
+
+  <!-- 초기 위치 인자 -->
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+
+  <!-- 로봇 스폰 -->
+  <node name="spawn_limo_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw) -unpause -urdf -param robot_description -model limo$(arg robot_namespace)"/>
+
+  <!-- 컨트롤러 파라미터 로드 -->
+  <rosparam file="$(find limo_gazebo_sim)/config/limo_ackerman_control.yaml" command="load"/>
+
+  <!-- 컨트롤러 스폰 -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="limo_state_controller limo_fl_steering_hinge_controller limo_fr_steering_hinge_controller"/>
+
+  <!-- TF/Joint pub -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <!-- RViz는 무거우면 나중에 수동 실행 -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find limo_gazebo_sim)/rviz/model_display.rviz" /> -->
+</launch>

@@ -1,0 +1,23 @@
+<launch>
+  <!-- 네임스페이스와 출력 토픽 지정 -->
+  <arg name="namespace" default="limo"/>
+  <arg name="cmd_topic" default="cmd_vel"/>
+
+  <!-- 필요시 전용 터미널에서 실행하고 싶으면 아래 주석 해제 (xterm 설치 필요) -->
+  <!-- <arg name="launch_prefix" default="xterm -e"/> -->
+
+  <group ns="$(arg namespace)">
+    <node pkg="limo_gazebo_utils"
+          type="limo_teleop.py"
+          name="limo_teleop"
+          output="screen">
+      <!-- 노드가 상대 토픽 'cmd_vel'을 쓰면 이 remap이 적용됨 -->
+      <remap from="cmd_vel" to="$(arg cmd_topic)"/>
+      <!-- 노드가 파라미터로 토픽을 받는 구현이라면 아래도 참고(옵션) -->
+      <param name="topic" value="$(arg cmd_topic)"/>
+      <!-- 터미널 필요 시: launch-prefix 사용
+      <launch-prefix>$(arg launch_prefix)</launch-prefix>
+      -->
+    </node>
+  </group>
+</launch>
