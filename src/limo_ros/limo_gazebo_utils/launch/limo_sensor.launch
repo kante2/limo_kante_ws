@@ -1,0 +1,12 @@
+<launch>
+  <!-- 선택: 네임스페이스와 시뮬타임 -->
+  <arg name="ns" default=""/>
+  <arg name="use_sim_time" default="true"/>
+
+  <param name="use_sim_time" value="$(arg use_sim_time)"/>
+
+  <group ns="$(arg ns)">
+    <node pkg="limo_gazebo_utils" type="limo_lidar_view.py"   name="limo_lidar_view"   output="screen"/>
+    <node pkg="limo_gazebo_utils" type="limo_camera_view.py"  name="limo_camera_view"  output="screen"/>
+  </group>
+</launch>
