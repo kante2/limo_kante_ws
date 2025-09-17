@@ -1,6 +1,0 @@
-docker pull dustynv/ros:noetic-ros-base-l4t-r32.7.1
-
-# 실행 예시(로봇 디바이스 + GPU):
-docker run -it --rm --network host --privileged \
-  --runtime nvidia -e NVIDIA_VISIBLE_DEVICES=all -e NVIDIA_DRIVER_CAPABILITIES=all \
-  -v /dev:/dev dustynv/ros:noetic-ros-base-l4t-r32.7.1
