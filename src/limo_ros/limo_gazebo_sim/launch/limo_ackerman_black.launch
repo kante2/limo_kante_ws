@@ -42,11 +42,11 @@
               -model $(arg robot_namespace)"/>
 
   <!-- 컨트롤러 -->
-  <rosparam file="$(find limo_gazebo_sim)/config/limo_ackerman_control.yaml" command="load" ns="limo"/>
+  <!-- <rosparam file="$(find limo_gazebo_sim)/config/limo_ackerman_control.yaml" command="load" ns="limo"/>
   <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
         args="limo_state_controller
               limo_fl_steering_hinge_controller
               limo_fr_steering_hinge_controller"/>
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/> -->
 
 </launch>

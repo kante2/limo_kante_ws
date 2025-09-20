@@ -3,12 +3,11 @@
 import sys
 import os
 
-current_dir = os.path.dirname(os.path.abspath(__file__))  # dec_mission_all.py가 있는 폴더
-# src/drive_decision 까지 상대 경로로 올라갔다가 내려가기 (예: 현재 파일 위치 기준)
-drive_decision_path = os.path.abspath(os.path.join(current_dir, '..', '..', 'src', 'drive_decision'))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+limo_control_path = os.path.abspath(os.path.join(current_dir, '..', 'limo_control'))
+if limo_control_path not in sys.path:
+    sys.path.insert(0, limo_control_path)
 
-if drive_decision_path not in sys.path:
-    sys.path.insert(0, drive_decision_path)
     
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, '..'))  # drive_controller 상위 폴더
@@ -17,9 +16,15 @@ if parent_dir not in sys.path:
 
 from time import *
 import rospy
-from lane.PIDController import PIDController
 import numpy as np
-from drive_decision.ctrl import ctrl_motor_servo
+
+# from lane.PIDController import PIDController
+# from drive_decision.ctrl import ctrl_motor_servo
+
+# 변경
+from control_pid import PIDController
+from control_motor import CtrlMotorServo   # 파일 내 클래스명이 CtrlMotorServo 라는 가정
+
 
 STOP = -1
 MISSION_MODE1 = 0
@@ -61,7 +66,8 @@ class DecLaneCurvature:
         
         self.stop_flag_num = 0
         self.goal_stop_line = 0     
-    def init_processing(self,CtrlMotorServo:ctrl_motor_servo.CtrlMotorServo):
+    # def init_processing(self,CtrlMotorServo:ctrl_motor_servo.CtrlMotorServo):
+    def init_processing(self, CtrlMotorServo: CtrlMotorServo):
         self.CtrlMotorServo = CtrlMotorServo
 
     def set_camera_info(self,stop_line,yellow_left_lane,yellow_right_lane,white_left_lane,white_right_lane):

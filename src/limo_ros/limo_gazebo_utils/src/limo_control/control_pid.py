@@ -4,11 +4,11 @@
 import sys
 import os
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, '..'))  # drive_controller 상위 폴더
-if parent_dir not in sys.path:
-    sys.path.insert(0, parent_dir)
-from time import *
+# current_dir = os.path.dirname(os.path.abspath(__file__))
+# parent_dir = os.path.abspath(os.path.join(current_dir, '..'))  # drive_controller 상위 폴더
+# if parent_dir not in sys.path:
+#     sys.path.insert(0, parent_dir)
+# from time import *
 
 class PIDController:
     def __init__(self, Kp=0.60, Ki=0.0, Kd=0.0527): # Kp = 0.64 Kd = 0.0527
