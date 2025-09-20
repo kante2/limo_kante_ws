@@ -14,7 +14,7 @@ xhost +local:docker
 cd ~/limo_ws/src/limo_ros
 
 2) 이미지 재빌드
-docker compose -f docker_pc/docker-compose.pc.yaml build --no-cache
+docker compose -f ./docker-compose.pc.yaml up -d --force-recreate --build
 
 3) 컨테이너 생성/기동
 docker compose -f docker_pc/docker-compose.pc.yaml up -d --force-recreate --compatibility

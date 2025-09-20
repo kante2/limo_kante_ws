@@ -1,0 +1,22 @@
+<launch>
+  <node pkg="limo_gazebo_utils" type="lidar_rect_roi_node.py" name="lidar_rect_roi" output="screen">
+    <param name="scan_topic" value="/limo/scan"/>
+
+    <param name="left_roi"  value="[0.3, 0.20, 2.5, 0.80]"/>
+    <param name="front_roi" value="[0.3,-0.20, 2.5, 0.20]"/>
+    <param name="right_roi" value="[0.3,-0.80, 2.5,-0.20]"/>
+
+    <param name="min_points_slow" value="10"/>
+    <param name="min_points_stop" value="15"/>
+
+    <!-- 시각화 -->
+    <param name="viz_x_max" value="5.0"/>
+    <param name="viz_y_max" value="3.0"/>
+    <param name="viz_width" value="900"/>
+    <param name="viz_height" value="540"/>
+    <param name="viz_r_max" value="10.0"/>      <!-- 필요시 사용 -->
+    <param name="use_imshow" value="false"/>    <!-- 헤드리스면 false -->
+    <param name="publish_debug_image" value="true"/>
+    <param name="debug_image_topic" value="/lidar_rect_roi/debug_image"/>
+  </node>
+</launch>

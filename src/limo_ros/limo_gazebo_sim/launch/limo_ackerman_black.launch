@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- PID -->
+  <rosparam command="load" file="$(find limo_gazebo_sim)/config/pids.yaml" ns="limo"/>
+
+  <arg name="robot_namespace" default="limo"/>
+  <arg name="world_name" default="$(find limo_gazebo_sim)/worlds/blacktrack.world"/>
+
+  <!-- 월드는 paused로 먼저 띄움 -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch" required="true">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="paused" value="true"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+  </include>
+
+  <!-- URDF 주입 -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find limo_description)/urdf/limo_ackerman.xacro'
+                  robot_namespace:=$(arg robot_namespace)"/>
+
+  <!-- 초기 포즈 -->
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.10"/>
+  <arg name="yaw" default="0.0"/>
+
+  <!-- [안전장치] 기존 동일 이름 모델이 있으면 삭제 -->
+  <node pkg="rosservice" type="rosservice" name="delete_old_limo" output="screen"
+        args="call --wait /gazebo/delete_model '{model_name: &quot;$(arg robot_namespace)&quot;}'" required="false"/>
+
+  <!-- 스폰: 서비스 대기(-wait) -->
+  <node name="spawn_limo_model" pkg="gazebo_ros" type="spawn_model" output="screen"
+        args="-wait
+              -x $(arg x)
+              -y $(arg y)
+              -z $(arg z)
+              -Y $(arg yaw)
+              -urdf
+              -param robot_description
+              -model $(arg robot_namespace)"/>
+
+  <!-- 컨트롤러 -->
+  <rosparam file="$(find limo_gazebo_sim)/config/limo_ackerman_control.yaml" command="load" ns="limo"/>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="limo_state_controller
+              limo_fl_steering_hinge_controller
+              limo_fr_steering_hinge_controller"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>

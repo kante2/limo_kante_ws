@@ -1,0 +1,76 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <model name="blacktrack">
+    <static>true</static>
+    <self_collide>false</self_collide>
+
+    <!-- ⚫️ 바닥: 충돌 plane (z=0), 시각화는 검정 -->
+    <link name="floor_link">
+      <pose>0 0 0 0 0 0</pose>
+      <collision name="floor_collision">
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>50 50</size> <!-- 반드시 양수 -->
+          </plane>
+        </geometry>
+      </collision>
+      <visual name="floor_visual">
+        <cast_shadows>false</cast_shadows>
+        <geometry>
+          <plane>
+            <normal>0 0 1</normal>
+            <size>50 50</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0 0 0 1</ambient>
+          <diffuse>0 0 0 1</diffuse>
+          <specular>0 0 0 1</specular>
+          <emissive>0 0 0 1</emissive>
+        </material>
+      </visual>
+    </link>
+
+    <!-- ⚪️ 트랙 라인: visual-only 얇은 박스들 (collision 없음), z=+0.01로 살짝 띄움 -->
+    <!-- 바깥 직선 구간이 긴 ‘운동장’ 형태: 필요만큼 복제/배치하면 됨 -->
+    <!-- 중앙 세로 라인 -->
+    <link name="lane_center_1">
+      <pose>0 0 0.01 0 0 0</pose>
+      <visual name="v">
+        <geometry><box><size>0.30 22.0 0.001</size></box></geometry>
+        <material><diffuse>1 1 1 1</diffuse><emissive>1 1 1 1</emissive></material>
+      </visual>
+    </link>
+
+    <!-- 가로 라인 (좌우 직선 구간) -->
+    <link name="lane_center_2">
+      <pose>6.0 0 0.01 0 0 1.57079632679</pose> <!-- 90도 회전 -->
+      <visual name="v">
+        <geometry><box><size>0.30 12.0 0.001</size></box></geometry>
+        <material><diffuse>1 1 1 1</diffuse><emissive>1 1 1 1</emissive></material>
+      </visual>
+    </link>
+    <link name="lane_center_3">
+      <pose>-6.0 0 0.01 0 0 1.57079632679</pose>
+      <visual name="v">
+        <geometry><box><size>0.30 12.0 0.001</size></box></geometry>
+        <material><diffuse>1 1 1 1</diffuse><emissive>1 1 1 1</emissive></material>
+      </visual>
+    </link>
+
+    <!-- 코너: 짧은 박스를 각도 바꿔 이어붙여 타원형 근사 (예: 12개) -->
+    <!-- 필요에 따라 각도/길이 조절 가능 -->
+    <!-- 오른쪽 위 쿼드런트 예시 -->
+    <link name="corner_ru_1">
+      <pose>3.5 8.5 0.01 0 0 0.35</pose>
+      <visual name="v">
+        <geometry><box><size>0.30 2.5 0.001</size></box></geometry>
+        <material><diffuse>1 1 1 1</diffuse><emissive>1 1 1 1</emissive></material>
+      </visual>
+    </link>
+    <!-- … 동일 패턴으로 10~14개 정도 배치 (좌표/각도만 달리) … -->
+
+    <!-- 필요하면 외곽선/차선 추가: 같은 방식으로 link 복제 -->
+  </model>
+</sdf>

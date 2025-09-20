@@ -1,2 +1,10 @@
-ros2 track 참고 자료 
-https://github.com/unib35/ros2-autonomous-track-driving/blob/main/ros2_term_project/worlds/car_track.world
+
+- KANTE 250920 
+
+1. how to check track 
+gazebo --verbose $(rospack find limo_gazebo_sim)/worlds/blacktrack.world
+
+2.
+killall gzserver gzclient 2>/dev/null || true
+pkill -f gazebo_ros 2>/dev/null || true
+pkill -f empty_world.launch 2>/dev/null || true

@@ -1,0 +1,19 @@
+material BlackTrack/Texture
+{
+  technique
+  {
+    pass
+    {
+      lighting off
+      ambient 1 1 1 1
+      diffuse 1 1 1 1
+      specular 0 0 0 1
+      texture_unit
+      {
+        texture blacktrack.png
+        filtering trilinear
+        tex_address_mode clamp
+      }
+    }
+  }
+}

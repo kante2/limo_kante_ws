@@ -30,7 +30,8 @@ services:
       # LiDAR/카메라/MCU 등 /dev 패스-스루
       - /dev:/dev
       # 워크스페이스 마운트 (호스트 → 컨테이너 /work)
-      - ${HOME}/TMAH_ws:/work/TMAH_ws:rw 
+      # - ${HOME}/TMAH_ws:/work/TMAH_ws:rw 
+      - /home/wego/limo_kante_ws:/root/ws:rw
       # GUI X소켓 공유 (호스트에서: xhost +si:localuser:root)
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       # 드라이버/런치 스크립트 (읽기전용 권장)
@@ -41,5 +42,6 @@ services:
     #   - "master:<ROS_MASTER_IP>"
 
     entrypoint: /ros_entrypoint.sh
-    command: ["/launch_ros_drivers.sh"]
+    # command: ["/launch_ros_drivers.sh"]
+    command: ["bash", "-lc", "sleep infinity"]
     restart: unless-stopped

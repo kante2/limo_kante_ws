@@ -1,0 +1,40 @@
+name: limo-noetic-nano
+
+services:
+  limo-noetic-container:
+    image: theconstructai/limo:noetic
+    platform: linux/arm64
+    pull_policy: always
+    privileged: true
+    network_mode: host
+    container_name: limo-noetic-nano
+
+    environment:
+      # --- ROS 네트워킹 ---
+      # 컨테이너에서 roscore 띄울 때 기본값
+      - ROS_MASTER_URI=http://localhost:11311
+      # 외부 PC의 roscore에 붙을 땐 위 줄 대신:
+      # - ROS_MASTER_URI=http://<ROS_MASTER_IP>:11311
+      # - ROS_IP=<NANO_IP>
+
+      # --- X11 GUI (필요할 때만) ---
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+    volumes:
+      # 디바이스 패스스루
+      - /dev:/dev
+      # 워크스페이스 마운트 (호스트 → 컨테이너 /work/TMAH_ws)
+      - ${HOME}/TMAH_ws:/work/TMAH_ws:rw
+      # X11 소켓 공유 (호스트에서: xhost +si:localuser:root)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # 드라이버/런치 스크립트
+      - ./volumes/launch_ros_drivers.sh:/launch_ros_drivers.sh:ro
+
+    # 필요 시 도메인 고정
+    # extra_hosts:
+    #   - "master:<ROS_MASTER_IP>"
+
+    entrypoint: /ros_entrypoint.sh
+    command: ["/launch_ros_drivers.sh"]
+    restart: unless-stopped

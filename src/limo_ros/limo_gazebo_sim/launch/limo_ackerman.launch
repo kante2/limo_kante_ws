@@ -44,4 +44,5 @@
     
     <!-- PC의 동작이 무겁고 Gazebo가 즉시 일어나지 않는 경우는, 런치 파일내의 RViz 의 행을 코멘트 아웃 해, RViz 의 기동을 무효화해 주세요. -->
     <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find limo_description)/rviz/model_display.rviz" /> -->
+    <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find limo_gazebo_sim)/rviz/model_display.rviz" /> --> 
 </launch>

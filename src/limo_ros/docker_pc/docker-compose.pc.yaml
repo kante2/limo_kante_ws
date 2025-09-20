@@ -3,46 +3,43 @@ version: "3.8"
 services:
   limo-noetic-pc:
     build:
-      context: ..                       # 리포 루트(~/limo_ws/src/limo_ros)
+      context: ..
       dockerfile: docker_pc/pc-noetic.Dockerfile
     image: limo-noetic:pc
     container_name: limo-noetic-pc
 
-    # 호스트와 같은 네트워크 (ROS 통신 편의)
     network_mode: host
+    ipc: host
 
-    # NVIDIA GPU 전달(4050 가속/GUI 경고 제거)
-    runtime: nvidia
+    # ◀️ 최신 compose 권장 방식
+    gpus: all
+    # (구버전/대안) runtime: nvidia
+
     environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
+      # X 포워딩
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
-      # 문제가 지속되면 아래 줄을 임시로 켜보세요(주석 해제)
-      # - __GLX_VENDOR_LIBRARY_NAME=nvidia
-      # 소프트웨어 렌더링으로 강제하고 싶으면(임시 회피용)
-      # - LIBGL_ALWAYS_SOFTWARE=1
-
-      # ROS 환경(단일 컨테이너 로컬 구동 가정)
+      # ◀️ NVIDIA PRIME 오프로딩 핵심 3종
+      - __NV_PRIME_RENDER_OFFLOAD=1
+      - __GLX_VENDOR_LIBRARY_NAME=nvidia
+      - __VK_LAYER_NV_optimus=NVIDIA_only
+      # ROS
       - ROS_MASTER_URI=http://127.0.0.1:11311
       - ROS_IP=127.0.0.1
+      # NVIDIA 컨테이너 런타임용 capabilities
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
 
     volumes:
-      # X11 포워딩
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # 로컬 워크스페이스를 컨테이너로 마운트
       - ${HOME}/limo_ws:/root/ws:rw
-      # 호스트 타임존 공유(로그 타임스탬프 맞춤)
       - /etc/localtime:/etc/localtime:ro
 
-    # 일부 OpenGL 드라이버가 /dev/dri 필요 (NVIDIA에선 없어도 되지만 호환성용)
-    devices:
-      - /dev/dri:/dev/dri
+    # ⚠️ NVIDIA 경로에서는 /dev/dri 마운트 불필요 (있어도 되지만 권장 X)
+    # devices:
+    #   - /dev/dri:/dev/dri
 
-    # 컨테이너를 살아있게 유지
     stdin_open: true
     tty: true
     command: ["tail","-f","/dev/null"]
 
-    # GUI/개발 컨테이너는 보통 재시작 정책 불필요(원하면 주석 해제)
-    # restart: unless-stopped

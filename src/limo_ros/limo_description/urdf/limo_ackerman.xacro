@@ -134,4 +134,11 @@
             <origin xyz="${-wheelbase/2} ${-track/2} ${wheel_vertical_offset}" rpy="${M_PI} 0 0" />
             <axis xyz="0 -1 0"/>
         </joint>
+    <!-- 바퀴 4개 시각화만 끄고 테스트 -->
+    <gazebo reference="front_left_wheel_link"><visualize>false</visualize></gazebo>
+    <gazebo reference="front_right_wheel_link"><visualize>false</visualize></gazebo>
+    <gazebo reference="rear_left_wheel_link"><visualize>false</visualize></gazebo>
+    <gazebo reference="rear_right_wheel_link"><visualize>false</visualize></gazebo>
 </robot>
+
+

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<launch>
+      <!-- launch 파일 맨 위 <launch> 안쪽, 로봇 스폰/컨트롤러 스포너 실행 전에 -->
+  <rosparam command="load" file="$(find limo_gazebo_sim)/config/pids.yaml" ns="limo"/>
+  <arg name="robot_namespace" default="limo"/>
+  <arg name="world_name" default="$(find limo_gazebo_sim)/worlds/empty.world"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <param name="robot_description"
+         command="$(find xacro)/xacro '$(find limo_description)/urdf/limo_ackerman.xacro'
+                  robot_namespace:=$(arg robot_namespace)"/>
+
+  <!-- initial pose -->
+  <arg name="x"   default="0.0"/>
+  <arg name="y"   default="0.0"/>
+  <arg name="z"   default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+
+  <!-- LIMO 스폰 -->
+  <node name="spawn_limo_model" pkg="gazebo_ros" type="spawn_model" args="-x $(arg x)
+            -y $(arg y)
+            -z $(arg z)
+            -Y $(arg yaw)
+            -unpause
+            -urdf
+            -param robot_description
+            -model limo$(arg robot_namespace)"/>
+
+  <!-- ✅ parking_map1 모델 스폰 (SDF 직접 경로) -->
+  <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_parking_map1"
+        args="-sdf
+              -file /root/ws/src/limo_ros/limo_gazebo_sim/worlds/parking_map1/model.sdf
+              -model parking_map1
+              -x 0 -y 0 -z 0 -Y 0" /> -->
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_parking_track_VER3"
+        args="-sdf
+              -file /root/ws/src/limo_ros/limo_gazebo_sim/worlds/track_ver4/model.sdf
+              -model track_ver4
+              -x 0 -y 0 -z 0 -Y 0" />
+
+
+  <!-- 컨트롤러 -->
+  <rosparam file="$(find limo_gazebo_sim)/config/limo_ackerman_control.yaml" command="load"/>
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen"
+        args="limo_state_controller
+              limo_fl_steering_hinge_controller
+              limo_fr_steering_hinge_controller"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+</launch>
