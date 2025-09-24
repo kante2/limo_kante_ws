@@ -2,7 +2,7 @@
 
 <launch>
       <!-- launch 파일 맨 위 <launch> 안쪽, 로봇 스폰/컨트롤러 스포너 실행 전에 -->
-  <rosparam command="load" file="$(find limo_gazebo_sim)/config/pids.yaml" ns="limo"/>
+  <!-- <rosparam command="load" file="$(find limo_gazebo_sim)/config/pids.yaml" ns="limo"/> -->
   <arg name="robot_namespace" default="limo"/>
   <arg name="world_name" default="$(find limo_gazebo_sim)/worlds/empty.world"/>
 
@@ -41,7 +41,7 @@
               -file /root/ws/src/limo_ros/limo_gazebo_sim/worlds/parking_map1/model.sdf
               -model parking_map1
               -x 0 -y 0 -z 0 -Y 0" /> -->
-  <node pkg="gazebo_ros" type="spawn_model" name="spawn_parking_track_VER3"
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_parking_track_VER4"
         args="-sdf
               -file /root/ws/src/limo_ros/limo_gazebo_sim/worlds/track_ver4/model.sdf
               -model track_ver4

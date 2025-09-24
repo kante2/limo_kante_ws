@@ -1,0 +1,152 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="blacktrack_light">
+
+    <!-- 기본 중력/물리 -->
+    <gravity>0 0 -9.81</gravity>
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <!-- 햇빛/조명 -->
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- 가벼운 바닥: 기본 ground_plane -->
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- =========================
+         초경량 트랙 (정적 모델)
+         - 텍스처 없음(단색)
+         - 큰 아스팔트 베이스 + 흰/노란 차선 박스
+         - 낮은 경계 벽
+         ========================= -->
+    <model name="light_track" static="true">
+      <pose>0 0 0 0 0 0</pose>
+
+      <!-- 아스팔트 베이스: 큰 평판(박스) -->
+      <link name="asphalt_base">
+        <collision name="col">
+          <geometry>
+            <box><size>60 40 0.02</size></box>
+          </geometry>
+          <pose>0 0 0.01 0 0 0</pose>
+        </collision>
+        <visual name="vis">
+          <geometry>
+            <box><size>60 40 0.02</size></box>
+          </geometry>
+          <pose>0 0 0.01 0 0 0</pose>
+          <material>
+            <ambient>0.12 0.12 0.12 1</ambient>
+            <diffuse>0.18 0.18 0.18 1</diffuse>
+            <specular>0.01 0.01 0.01 1</specular>
+          </material>
+        </visual>
+      </link>
+
+      <!-- 주 트랙 직사각형 (살짝 더 어두움) -->
+      <link name="main_strip">
+        <collision name="col">
+          <geometry><box><size>50 10 0.02</size></box></geometry>
+          <pose>0 0 0.02 0 0 0</pose>
+        </collision>
+        <visual name="vis">
+          <geometry><box><size>50 10 0.02</size></box></geometry>
+          <pose>0 0 0.02 0 0 0</pose>
+          <material>
+            <ambient>0.10 0.10 0.10 1</ambient>
+            <diffuse>0.14 0.14 0.14 1</diffuse>
+          </material>
+        </visual>
+      </link>
+
+      <!-- 코너를 “직사각형 조각” 4개로 이어붙이기 (L자 코너 ×2) -->
+      <link name="corner1">
+        <collision name="col"><geometry><box><size>10 10 0.02</size></box></geometry>
+          <pose>-20 10 0.02 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>10 10 0.02</size></box></geometry>
+          <pose>-20 10 0.02 0 0 0</pose>
+          <material><ambient>0.10 0.10 0.10 1</ambient><diffuse>0.14 0.14 0.14 1</diffuse></material>
+        </visual>
+      </link>
+
+      <link name="corner2">
+        <collision name="col"><geometry><box><size>10 10 0.02</size></box></geometry>
+          <pose>20 -10 0.02 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>10 10 0.02</size></box></geometry>
+          <pose>20 -10 0.02 0 0 0</pose>
+          <material><ambient>0.10 0.10 0.10 1</ambient><diffuse>0.14 0.14 0.14 1</diffuse></material>
+        </visual>
+      </link>
+
+      <!-- 흰색 차선(중앙선 2줄 예시) -->
+      <link name="lane_white_left">
+        <collision name="col"><geometry><box><size>50 0.15 0.01</size></box></geometry>
+          <pose>0 1.0 0.03 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>50 0.15 0.01</size></box></geometry>
+          <pose>0 1.0 0.03 0 0 0</pose>
+          <material><ambient>1 1 1 1</ambient><diffuse>1 1 1 1</diffuse></material>
+        </visual>
+      </link>
+
+      <link name="lane_white_right">
+        <collision name="col"><geometry><box><size>50 0.15 0.01</size></box></geometry>
+          <pose>0 -1.0 0.03 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>50 0.15 0.01</size></box></geometry>
+          <pose>0 -1.0 0.03 0 0 0</pose>
+          <material><ambient>1 1 1 1</ambient><diffuse>1 1 1 1</diffuse></material>
+        </visual>
+      </link>
+
+      <!-- 노란 중앙선(한 줄) -->
+      <link name="lane_yellow_center">
+        <collision name="col"><geometry><box><size>50 0.12 0.01</size></box></geometry>
+          <pose>0 0 0.031 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>50 0.12 0.01</size></box></geometry>
+          <pose>0 0 0.031 0 0 0</pose>
+          <material><ambient>1.0 0.9 0.15 1</ambient><diffuse>1.0 0.9 0.15 1</diffuse></material>
+        </visual>
+      </link>
+
+      <!-- 낮은 경계벽 (추돌 시 튕김 확인용) -->
+      <link name="wall_left">
+        <collision name="col"><geometry><box><size>50 0.3 0.5</size></box></geometry>
+          <pose>0 5.25 0.26 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>50 0.3 0.5</size></box></geometry>
+          <pose>0 5.25 0.26 0 0 0</pose>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material>
+        </visual>
+      </link>
+
+      <link name="wall_right">
+        <collision name="col"><geometry><box><size>50 0.3 0.5</size></box></geometry>
+          <pose>0 -5.25 0.26 0 0 0</pose>
+        </collision>
+        <visual name="vis"><geometry><box><size>50 0.3 0.5</size></box></geometry>
+          <pose>0 -5.25 0.26 0 0 0</pose>
+          <material><ambient>0.4 0.4 0.4 1</ambient><diffuse>0.5 0.5 0.5 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 시작 위치 힌트(스폰 시 참고용) -->
+    <state world_name="blacktrack_light">
+      <model name="light_track">
+        <pose>0 0 0 0 0 0</pose>
+      </model>
+    </state>
+
+  </world>
+</sdf>
