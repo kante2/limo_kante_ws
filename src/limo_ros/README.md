@@ -35,6 +35,4 @@ Clone the repository and catkin_make:
     $ roslaunch limo_bringup limo_teleop_keyboard.launch
     ```
 
-## ------------------------------------------------------------------
-## kante upload
-
+    

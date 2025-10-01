@@ -1,16 +1,16 @@
 <launch>
   <node name="ydlidar_lidar_publisher" pkg="ydlidar_ros_driver" type="ydlidar_ros_driver_node" output="screen" respawn="false">
     <!-- string property -->
-    <param name="port" type="string" value="192.168.1.200"/>
+    <param name="port" type="string" value="/dev/ydlidar"/>
     <param name="frame_id" type="string" value="laser_frame"/>
     <param name="ignore_array" type="string" value=""/>
 
     <!-- int property -->
-    <param name="baudrate" type="int" value="2000"/>
+    <param name="baudrate" type="int" value="230400"/>
     <!-- 0:TYPE_TOF, 1:TYPE_TRIANGLE, 2:TYPE_TOF_NET -->
     <param name="lidar_type" type="int" value="1"/>
     <!-- 0:YDLIDAR_TYPE_SERIAL, 1:YDLIDAR_TYPE_TCP -->
-    <param name="device_type" type="int" value="1"/>
+    <param name="device_type" type="int" value="0"/>
     <param name="sample_rate" type="int" value="4"/>
     <param name="abnormal_check_count" type="int" value="4"/>
     <param name="intensity_bit" type="int" value="8"/>
