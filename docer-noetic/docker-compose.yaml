@@ -1,0 +1,64 @@
+version: "3.8"
+
+name: limo-noetic-nano
+
+services:
+  limo-noetic-container:
+    image: theconstructai/limo:noetic
+    platform: linux/arm64
+    container_name: limo-noetic-nano
+
+    privileged: true
+    network_mode: host
+    ipc: host
+    runtime: nvidia
+
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=graphics,utility,compute
+
+      # --- ROS 네트워킹 ---
+      - ROS_MASTER_URI=http://localhost:11311
+      # 외부 master 사용 시:
+      # - ROS_MASTER_URI=http://<ROS_MASTER_IP>:11311
+      # - ROS_IP=<NANO_IP>
+
+      # --- X11 GUI ---
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+
+      # --- CUDA 10.2 경로(네 bashrc 반영) ---
+      - PATH=/usr/local/cuda-10.2/bin:${PATH}
+      - LD_LIBRARY_PATH=/usr/local/cuda-10.2/lib64:${LD_LIBRARY_PATH}
+
+      # (선택) 컨테이너 내 워크스페이스 경로를 변수로 노출
+      - MOUNT_WS=/root/ws
+
+    volumes:
+      # 센서/MCU 등 디바이스
+      - /dev:/dev
+
+      # X11
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /home/agilex/.Xauthority:/root/.Xauthority:ro
+
+      # ***** 핵심 MOUNT: 호스트 워크스페이스 -> 컨테이너 *****
+      - /home/agilex/limo_kante_ws:/root/ws:rw
+
+      # (옵션) 로컬타임/타임존 동기화
+      - /etc/localtime:/etc/localtime:ro
+
+      # (옵션) 별도 실행 스크립트/런치 파일
+      # - ./volumes/launch_ros_drivers.sh:/launch_ros_drivers.sh:ro
+
+    entrypoint: /ros_entrypoint.sh
+    command: ["bash", "-lc",
+      "source /opt/ros/noetic/setup.bash; \
+       if [ -f /root/ws/devel/setup.bash ]; then source /root/ws/devel/setup.bash; fi; \
+       sleep infinity"
+    ]
+
+    # (옵션) 호스트 UID/GID로 실행해서 퍼미션 문제 예방
+    # user: "${UID}:${GID}"
+
+    restart: unless-stopped

@@ -1,5 +1,5 @@
 # Copyright(c) 2020 eaibot limited.
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.10...3.26)  # 시스템에 맞춰 3.x로 업데이트
 
 project(ydlidar_ros_driver)
 
