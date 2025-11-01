@@ -1,13 +1,18 @@
-# X11 권한 허용
-xhost +si:localuser:root
+실행방법 :: 1101
 
-# compose 있는 디렉토리로 이동
-cd /home/agilex/limo_kante_ws
-docker compose up -d
+cd /home/agilex/limo_kante_ws/docer-noetic
 
-# 컨테이너 접속
+# 이미지 빌드
+docker-compose build
+
+# 컨테이너 실행
+docker-compose up -d
+
+# 접속 후 빌드
 docker exec -it limo-noetic-nano bash
-# (컨테이너 안)
 source /opt/ros/noetic/setup.bash
 cd /root/ws
-catkin_make && source devel/setup.bash
+# (처음 한 번은 캐시 충돌 피하려면 build/devel/install 지우고 시작)
+rm -rf build devel install
+catkin_make
+source devel/setup.bash
