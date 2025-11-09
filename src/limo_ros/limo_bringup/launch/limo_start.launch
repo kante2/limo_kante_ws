@@ -10,6 +10,10 @@
         <arg name="use_mcnamu" default="$(arg use_mcnamu)" />
     </include>
 
+    <!-- camera -->
+    <include file="$(find ros_astra_camera)/launch/dabai_u3.launch">
+    </include>
+
     <!-- <include file="$(find ydlidar_ros)/launch/X2L.launch" /> -->
     <include file="$(find ydlidar_ros)/launch/X2.launch" />
 
