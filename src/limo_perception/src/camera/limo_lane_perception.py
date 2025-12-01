@@ -10,6 +10,8 @@ from cv_bridge import CvBridge
 from math import *
 
 
+# 사실 제어 부분은 decision에 있어야 하지만, 현재는 그냥, 제어 부분까지, 여기에 담아두겠음,
+
 class LimoLanePerception:
     def __init__(self):
         # 여기서는 init_node 안 함 (메인에서 호출)
@@ -150,7 +152,7 @@ class LimoLanePerception:
             cy, cx_center = center_point
             img_cx = bev_binary.shape[1] * 0.5
             dx = float(cx_center) - float(img_cx)
-            steer = dx * self.steer_gain * -1.0  # 좌우 반전
+            steer = dx * self.steer_gain * -1.0  # 좌우 반전 (-1.0)
             valid = True
 
             cv2.drawMarker(

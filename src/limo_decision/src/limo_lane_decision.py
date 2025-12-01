@@ -48,7 +48,7 @@ class LimoLaneDecision:
         self.cmd_pub.publish(Twist())
 
     # ---------------- lane_decision_step ----------------
-    def lane_decision_step(self):
+    def mission_lane_step(self):
         """
         한 번 호출할 때마다 현재 상태 기준으로 /cmd_vel 한 번 퍼블리시
         """
