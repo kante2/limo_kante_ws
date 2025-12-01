@@ -153,8 +153,8 @@ target_link_libraries(autorace_main_node
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
-  src/limo_decision/src/limo_lane_decision.py
-  src/limo_decision/src/limo_labacorn_decision.py
+  src/limo_lane_decision.py
+  src/limo_labacorn_decision.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
