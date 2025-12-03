@@ -10,7 +10,7 @@
         respawn="false"/>
 
   <node pkg="limo_perception"
-        type="src/lidar/limo_labacorn_perception.py"
+        type="src/lidar/limo_wall_perception.py"
         name="$(arg labacorn_node_name)"
         output="screen"
         respawn="false"/>

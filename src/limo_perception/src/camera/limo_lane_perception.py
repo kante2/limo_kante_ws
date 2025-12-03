@@ -10,8 +10,6 @@ from cv_bridge import CvBridge
 from math import *
 
 
-# 사실 제어 부분은 decision에 있어야 하지만, 현재는 그냥, 제어 부분까지, 여기에 담아두겠음,
-
 class LimoLanePerception:
     def __init__(self):
         # 여기서는 init_node 안 함 (메인에서 호출)
@@ -22,7 +20,7 @@ class LimoLanePerception:
         rospy.on_shutdown(self.shutdown_hook)
 
         # perception 결과 퍼블리시
-        self.steer_pub = rospy.Publisher("/lane/steer", Float32, queue_size=1)
+        self.center_error_pub = rospy.Publisher("/lane/center_error", Float32, queue_size=1)
         self.valid_pub = rospy.Publisher("/lane/valid", Bool, queue_size=1)
 
         # === ROS 변수 ===
@@ -37,8 +35,6 @@ class LimoLanePerception:
         # =================================================================
         self.img_w = 640
         self.img_h = 480
-        self.steer_gain = 0.005
-
         self.center_block_half_width_px = 140
 
         # === Sliding-window ===
@@ -80,10 +76,10 @@ class LimoLanePerception:
         cv2.destroyAllWindows()
 
     # ---------------- Camera Perception ----------------
-    def process_camera_to_get_steer(self, bgr_img):
+    def process_camera_features(self, bgr_img):
         """
-        return: (steer, valid)
-        steer: float (라디안 스케일의 조향 명령)
+        return: (center_error_px, valid)
+        center_error_px: float (이미지 중앙 대비 차선 중앙의 픽셀 오프셋, +면 우측)
         valid: bool  (차선 검출 성공 여부)
         """
         h, w = bgr_img.shape[:2]
@@ -148,11 +144,11 @@ class LimoLanePerception:
 
         # 6) 스티어 계산
         valid = False
+        center_error = 0.0
         if center_point is not None:
             cy, cx_center = center_point
             img_cx = bev_binary.shape[1] * 0.5
-            dx = float(cx_center) - float(img_cx)
-            steer = dx * self.steer_gain * -1.0  # 좌우 반전 (-1.0)
+            center_error = float(cx_center) - float(img_cx)
             valid = True
 
             cv2.drawMarker(
@@ -172,11 +168,11 @@ class LimoLanePerception:
                 thickness=2,
             )
         else:
-            steer = 0.0
+            center_error = 0.0
 
         cv2.imshow("Lane Detection (Sliding Windows)", debug_bev_img)
 
-        return steer, valid
+        return center_error, valid
 
     # ---------------- Helper: ROI / BEV ----------------
     def make_roi_polygon(self, h, w):
@@ -384,8 +380,8 @@ class LimoLanePerception:
         """
         한 번 호출할 때마다:
         - 최신 카메라 프레임 처리
-        - steer / valid 계산
-        - /lane/steer, /lane/valid 퍼블리시
+        - center_error / valid 계산
+        - /lane/center_error, /lane/valid 퍼블리시
         - OpenCV 윈도우 갱신
         """
         if self.camera_flag and self.camera_msg is not None:
@@ -393,16 +389,34 @@ class LimoLanePerception:
                 bgr_img = self.bridge.compressed_imgmsg_to_cv2(
                     self.camera_msg, desired_encoding='bgr8'
                 )
-                steer, valid = self.process_camera_to_get_steer(bgr_img)
+                center_error, valid = self.process_camera_features(bgr_img)
             except Exception as e:
                 rospy.logwarn(f"카메라 처리 에러: {e}")
-                steer, valid = 0.0, False
+                center_error, valid = 0.0, False
         else:
-            steer, valid = 0.0, False
+            center_error, valid = 0.0, False
 
-        self.steer_pub.publish(Float32(data=float(steer)))
+        self.center_error_pub.publish(Float32(data=float(center_error)))
         self.valid_pub.publish(Bool(data=bool(valid)))
 
         # ESC로 전체 노드 종료
         if cv2.waitKey(1) & 0xFF == 27:
             rospy.signal_shutdown("ESC pressed in perception")
+
+
+def main():
+    rospy.init_node("limo_lane_perception")
+    node = LimoLanePerception()
+    rate_hz = rospy.get_param("~loop_rate", 30.0)
+    rate = rospy.Rate(rate_hz)
+
+    while not rospy.is_shutdown():
+        node.lane_perception_step()
+        rate.sleep()
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass
