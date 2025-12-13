@@ -1,0 +1,32 @@
+services:
+  noetic_gpu_gui:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USERNAME: kante
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+
+    container_name: noetic_gpu_gui
+    network_mode: host
+    ipc: host
+    gpus: all
+
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - /etc/localtime:/etc/localtime:ro
+
+      # ✅ 호스트 WS 마운트 (경로 맞는지 확인!)
+      - /home/kante/Documents/limo_kante_ws:/limo_kante_ws
+
+    working_dir: /limo_kante_ws
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
