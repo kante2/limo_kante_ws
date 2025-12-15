@@ -1,0 +1,2 @@
+cd limo_kante_ws/src/limo_perception/launch/lane_and_labacorn_perception.launch
+roslaunch limo_perception lane_and_labacorn_perception

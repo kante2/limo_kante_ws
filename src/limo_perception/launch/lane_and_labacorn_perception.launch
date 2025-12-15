@@ -1,7 +1,7 @@
 <launch>
   <!-- Launch camera-based lane perception and lidar-based labacorn perception together -->
   <arg name="lane_node_name" default="limo_lane_perception"/>
-  <arg name="labacorn_node_name" default="limo_labacorn_perception"/>
+  <arg name="obstacle_node_name" default="limo_obstacle_perception"/>
 
   <node pkg="limo_perception"
         type="src/camera/limo_lane_perception.py"
@@ -10,8 +10,8 @@
         respawn="false"/>
 
   <node pkg="limo_perception"
-        type="src/lidar/limo_wall_perception.py"
-        name="$(arg labacorn_node_name)"
+        type="src/lidar/limo_avoidance_perception.py"
+        name="$(arg obstacle_node_name)"
         output="screen"
         respawn="false"/>
 </launch>
