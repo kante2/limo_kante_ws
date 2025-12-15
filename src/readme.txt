@@ -1,26 +1,20 @@
-# how to use limo
+# How to run the mission scripts
 
-## 1. Real robot (Jetson Nano)
+## 1. Sensor preprocessing (perception launch)
 ```
-roslaunch limo_base limo_base.launch // 또는  bringup머시기 하면 됨!
+cd /limo_kante_ws/src
+./sensor_preprocessing.sh
 ```
+- sources `/limo_kante_ws/devel/setup.bash`
+- runs `roslaunch limo_perception lane_and_labacorn_perception.launch`
 
-# --실제 로봇은 여기!
-## 3. Perception + Decision 실행
-터미널을 두 개 열고 각각 아래 명령을 실행합니다. (워크스페이스: `/root/ws`)
+## 2. Main decision node
+Open another terminal after the perception stack is up:
+```
+cd /limo_kante_ws/src
+./main_node.sh
+```
+- sources `/limo_kante_ws/devel/setup.bash`
+- runs `rosrun limo_decision main_node_2.py`
 
-터미널 1 – 카메라 차선 + LiDAR 라바콘 퍼셉션 런치
-```
-cd /root/ws
-source devel/setup.bash      # 필요 시
-roslaunch limo_perception lane_and_labacorn_perception.launch
-```
-
-터미널 2 – 메인 미션 디시전 노드 (lane/labacorn 전환 포함)
-```
-cd /root/ws
-source devel/setup.bash      # 필요 시
-rosrun limo_decision main_node
-```
-
-이후 각 노드는 `/labacorn/target`, `/labacorn_detected`, `/cmd_vel`, `/commands/motor/speed`, `/commands/servo/position` 등 관련 토픽을 주고받으며 주행을 수행합니다.
+두 스크립트 모두 같은 디렉터리에서 실행하면 되고, 추가 인수 없이 각각 인지/디시전 노드를 띄웁니다.

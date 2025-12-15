@@ -1,0 +1,2 @@
+source devel/setup.bash
+roslaunch limo_perception lane_and_labacorn_perception.launch
