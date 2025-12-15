@@ -52,7 +52,7 @@ class MissionManager:
 
             if state != self.prev_state:
                 rospy.loginfo("[main_node] Mission changed -> %s", state)
-                self.prev_state = sctate
+                self.prev_state = state
 
             # ===== 해당 미션 step 1회 수행 =====
             if state == "OBSTACLE":
